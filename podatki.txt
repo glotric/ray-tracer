@@ -1,0 +1,6 @@
+kamera in zaslon:
+1920 1080
+camx=-1
+
+objekti:
+krogla x=5 y=0 z=2 R=2 RGB(64,164,213)
