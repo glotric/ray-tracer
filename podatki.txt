@@ -1,6 +1,6 @@
-kamera in zaslon:
+zaslon in kamera:
 1920 1080
 camera=(0,0,1)
 
 objekti:
-krogla x=5 y=0 z=2 R=2 RGB(64,164,213)
+krogla x=5 y=0 z=2 R=2 RGB(64,164,213) obojnost=0.5
