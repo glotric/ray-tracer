@@ -44,3 +44,10 @@ class Vector(Vector):
     def __sub__(self, other):
         subbed = (self.x-other.x, self.y-other.y, self.z-other.z)
         return Vector(*subbed)
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y and self.z == other.z
+
+    def scale(self, alpha):
+        scaled = (alpha*self.x, alpha*self.y, alpha*self.z)
+        return Vector(*scaled)
