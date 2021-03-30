@@ -59,6 +59,10 @@ class Ray:
     def __repr__(self):
         return 'Ray({0}, {1})'.format(self.origin, self.direction)
 
+    def reflect(self, axis): #axis je Vector
+        return
+
+
 #Definicija krogel
 
 class Sphere:
@@ -76,6 +80,8 @@ class Sphere:
         return 'Sphere({0},{1},{2},{3})'.format(self.r, self.center, self.RGB, self.reflect)
 
     def intersect(self, ray):
+        intersection = {'in': 0, 'out': 0, 'ok': False}
+
         A = ray.direction.norm()**2
         B = 2 * ray.direction.dotproduct(ray.origin-self.center)
         C = (ray.origin-self.center).norm()**2 - self.r**2
@@ -83,6 +89,20 @@ class Sphere:
         disc = B**2 - 4*A*C
 
         if disc > 0:
+            lambda1 = (-B + np.sqrt(disc)) / (2*A)
+            lambda2 = (-B - np.sqrt(disc)) / (2*A)
+
+            if lambda1 >= 0 and lambda2 >= 0:
+                if lambda1 < lambda2:
+                    intersection['in'] = lambda1
+                    intersection['out'] = lambda2
+                else:
+                    intersection['in'] = lambda2
+                    intersection['out'] = lambda1
+                intersection['ok'] = True
+
+        return intersection
+
 
 
 #Začne brat podatke
