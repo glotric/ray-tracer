@@ -2,15 +2,8 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
-f = open("podatki.txt", 'r')
-lines = f.readlines()
 
-width, height = lines[1].split()
-cam_pos = tuple(lines[2].split('=')[-1].strip('()\n ').split(','))
-
-camera = np.array([float(cam_pos[0]), float(cam_pos[1]), float(cam_pos[2])])
-ratio = float(width) / float(height)
-screen = (-1, 1 / ratio, 1, -1 / ratio) # L U R D
+#Definicija vektorjev
 
 class Vector:
     
@@ -21,7 +14,7 @@ class Vector:
 
 class Vector(Vector):
     def __repr__(self):
-        return 'Vector ({0}, {1}, {2})'.format(self.x, self.y, self.z)
+        return 'Vector({0}, {1}, {2})'.format(self.x, self.y, self.z)
 
     def __str__(self):
         return '({0}, {1}, {2})'.format(self.x, self.y, self.z)
@@ -51,3 +44,41 @@ class Vector(Vector):
     def scale(self, alpha):
         scaled = (alpha*self.x, alpha*self.y, alpha*self.z)
         return Vector(*scaled)
+
+
+#Definicija krogel
+
+class Sphere:
+
+    def __init__(self, r, pos, RGB, reflect):   #pos je Vector, RGB je touple, r in reflect sta int
+        self.r = r
+        self.pos = pos
+        self.RGB = RGB
+        self.reflect = reflect
+
+    def __str__(self):
+        return 'r = {0}, center = {1}, colour = {2}, reflect = {3}'.format(self.r, self.pos, self.RGB, self.reflect)
+
+    def __repr__(self):
+        return 'Sphere({0},{1},{2},{3})'.format(self.r, self.pos, self.RGB, self.reflect)
+
+
+
+
+#Začne brat podatke
+
+f = open("podatki.txt", 'r')
+lines = f.readlines()
+
+width, height = lines[1].split()
+cam_pos = tuple(lines[2].split('=')[-1].strip('()\n ').split(','))
+
+camera = Vector([float(cam_pos[0]), float(cam_pos[1]), float(cam_pos[2])])
+ratio = float(width) / float(height)
+screen = (-1, 1, -1/ratio, 1/ratio) # L R D U
+
+
+
+pos = Vector(2,4,0)
+krogla = Sphere(5, pos, (123, 34, 5), 0.5)
+print(krogla)
