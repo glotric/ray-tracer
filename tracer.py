@@ -12,7 +12,6 @@ class Vector:
         self.y = y
         self.z = z
 
-class Vector(Vector):
     def __repr__(self):
         return 'Vector({0}, {1}, {2})'.format(self.x, self.y, self.z)
 
@@ -62,7 +61,8 @@ class Sphere:
     def __repr__(self):
         return 'Sphere({0},{1},{2},{3})'.format(self.r, self.pos, self.RGB, self.reflect)
 
-
+    def intersect(self, ray):
+        pass
 
 
 #Začne brat podatke
