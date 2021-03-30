@@ -45,24 +45,44 @@ class Vector:
         return Vector(*scaled)
 
 
+#Definicija žarka
+
+class Ray:
+
+    def __init__(self, origin, direction): #origin in direction argumenta sta Vector
+        self.origin = origin
+        self.direction = direction.normalize()
+
+    def __str__(self):
+        return '{0} -> {1}'.format(self.origin, self.direction)
+
+    def __repr__(self):
+        return 'Ray({0}, {1})'.format(self.origin, self.direction)
+
 #Definicija krogel
 
 class Sphere:
 
-    def __init__(self, r, pos, RGB, reflect):   #pos je Vector, RGB je touple, r in reflect sta int
+    def __init__(self, r, center, RGB, reflect):   #pos je Vector, RGB je touple, r in reflect sta int
         self.r = r
-        self.pos = pos
+        self.center = center
         self.RGB = RGB
         self.reflect = reflect
 
     def __str__(self):
-        return 'r = {0}, center = {1}, colour = {2}, reflect = {3}'.format(self.r, self.pos, self.RGB, self.reflect)
+        return 'r = {0}, center = {1}, colour = {2}, reflect = {3}'.format(self.r, self.center, self.RGB, self.reflect)
 
     def __repr__(self):
-        return 'Sphere({0},{1},{2},{3})'.format(self.r, self.pos, self.RGB, self.reflect)
+        return 'Sphere({0},{1},{2},{3})'.format(self.r, self.center, self.RGB, self.reflect)
 
     def intersect(self, ray):
-        pass
+        A = ray.direction.norm()**2
+        B = 2 * ray.direction.dotproduct(ray.origin-self.center)
+        C = (ray.origin-self.center).norm()**2 - self.r**2
+
+        disc = B**2 - 4*A*C
+
+        if disc > 0:
 
 
 #Začne brat podatke
@@ -77,8 +97,16 @@ camera = Vector([float(cam_pos[0]), float(cam_pos[1]), float(cam_pos[2])])
 ratio = float(width) / float(height)
 screen = (-1, 1, -1/ratio, 1/ratio) # L R D U
 
+image = np.zeros((int(height), int(width), 3)) 
+for i, y in enumerate(np.linspace(screen[2], screen[3], int(height))):
+    for j, x in enumerate(np.linspace(screen[0], screen[1], int(width))):
+        # image[i, j] = ...
+        print("progress: %d/%d" % (i + 1, int(height)))
+
+plt.imsave('image.png', image)
 
 
 pos = Vector(2,4,0)
 krogla = Sphere(5, pos, (123, 34, 5), 0.5)
 print(krogla)
+
