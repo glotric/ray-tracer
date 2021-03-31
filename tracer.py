@@ -54,13 +54,20 @@ class Ray:
         self.direction = direction.normalize()
 
     def __str__(self):
-        return '{0} -> {1}'.format(self.origin, self.direction)
+        return '{0} + s*{1}'.format(self.origin, self.direction)
 
     def __repr__(self):
         return 'Ray({0}, {1})'.format(self.origin, self.direction)
 
     def reflect(self, sphere):
-        intersection = sphere.intersect(self)
+        point = sphere.intersect_point(self)
+
+        factor = self.direction.dotproduct(sphere.intersect_normal(self))
+        normal = sphere.intersect_normal(self).scale(factor)
+
+        direction = self.direction - normal
+
+        return Ray(point, direction)
 
 
 #Definicija krogel
@@ -103,6 +110,10 @@ class Sphere:
 
         return intersection
 
+    def intersect_point(self, ray):
+        point = ray.origin + ray.direction.scale(self.intersect(ray)['in'])
+        return point
+
     def intersect_normal(self, ray):
         alpha = self.intersect(ray)['in']
         v1 = ray.origin + ray.direction.scale(alpha)
@@ -137,5 +148,8 @@ plt.imsave('image.png', image)'''
 
 pos = Vector(2,4,0)
 krogla = Sphere(5, pos, (123, 34, 5), 0.5)
+zarek = Ray(Vector(-12,4,0), Vector(1, 0, 0))
 print(krogla)
-
+print(zarek)
+print(krogla.intersect_point(zarek))
+print(zarek.reflect(krogla))
