@@ -59,8 +59,8 @@ class Ray:
     def __repr__(self):
         return 'Ray({0}, {1})'.format(self.origin, self.direction)
 
-    def reflect(self, axis): #axis je Vector
-        return
+    def reflect(self, sphere):
+        intersection = sphere.intersect(self)
 
 
 #Definicija krogel
@@ -103,6 +103,15 @@ class Sphere:
 
         return intersection
 
+    def intersect_normal(self, ray):
+        alpha = self.intersect(ray)['in']
+        v1 = ray.origin + ray.direction.scale(alpha)
+
+        v2 = v1 - self.center
+        normal = v2.scale(1/self.r)
+
+        return normal.normalize()
+
 
 
 #Začne brat podatke
@@ -117,13 +126,13 @@ camera = Vector([float(cam_pos[0]), float(cam_pos[1]), float(cam_pos[2])])
 ratio = float(width) / float(height)
 screen = (-1, 1, -1/ratio, 1/ratio) # L R D U
 
-image = np.zeros((int(height), int(width), 3)) 
+'''image = np.zeros((int(height), int(width), 3)) 
 for i, y in enumerate(np.linspace(screen[2], screen[3], int(height))):
     for j, x in enumerate(np.linspace(screen[0], screen[1], int(width))):
         # image[i, j] = ...
         print("progress: %d/%d" % (i + 1, int(height)))
 
-plt.imsave('image.png', image)
+plt.imsave('image.png', image)'''
 
 
 pos = Vector(2,4,0)
