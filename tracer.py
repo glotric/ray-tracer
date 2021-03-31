@@ -23,8 +23,11 @@ class Vector:
 
     def normalize(self):
         norm = self.norm()
-        normalized = (self.x/norm, self.y/norm, self.z/norm)
-        return Vector(*normalized)
+        if norm == 0:
+            return self
+        else:
+            normalized = (self.x/norm, self.y/norm, self.z/norm)
+            return Vector(*normalized)
 
     def dotproduct(self, other):
         return self.x*other.x + self.y*other.y + self.z*other.z
@@ -63,7 +66,7 @@ class Ray:
         point = sphere.intersect_point(self)
         normal = sphere.intersect_normal(self)
 
-        factor = self.direction.dotproduct(normal)
+        factor = 2*self.direction.dotproduct(normal)
         scaled = normal.scale(factor)
         ref_direction = self.direction - scaled
 
@@ -146,9 +149,9 @@ for i, y in enumerate(np.linspace(screen[2], screen[3], int(height))):
 plt.imsave('image.png', image)'''
 
 
-pos = Vector(2,4,0)
-krogla = Sphere(5, pos, (123, 34, 5), 0.5)
-zarek = Ray(Vector(-12,4,0), Vector(1, 0, 0))
+pos = Vector(1,1,0)
+krogla = Sphere(1, pos, (123, 34, 5), 0.5)
+zarek = Ray(Vector(-1,-1,0), Vector(1, 1, 0))
 print(krogla)
 print(zarek)
 print(krogla.intersect_point(zarek))
