@@ -61,13 +61,13 @@ class Ray:
 
     def reflect(self, sphere):
         point = sphere.intersect_point(self)
+        normal = sphere.intersect_normal(self)
 
-        factor = self.direction.dotproduct(sphere.intersect_normal(self))
-        normal = sphere.intersect_normal(self).scale(factor)
+        factor = self.direction.dotproduct(normal)
+        scaled = normal.scale(factor)
+        ref_direction = self.direction - scaled
 
-        direction = self.direction - normal
-
-        return Ray(point, direction)
+        return Ray(point, ref_direction)
 
 
 #Definicija krogel
