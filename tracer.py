@@ -136,6 +136,8 @@ lines = f.readlines()
 width, height = lines[1].split()
 cam_pos = tuple(lines[2].split('=')[-1].strip('()\n ').split(','))
 
+#definirana kamera in zaslon
+
 camera = Vector([float(cam_pos[0]), float(cam_pos[1]), float(cam_pos[2])])
 ratio = float(width) / float(height)
 screen = (-1, 1, -1/ratio, 1/ratio) # L R D U
@@ -148,7 +150,7 @@ for i, y in enumerate(np.linspace(screen[2], screen[3], int(height))):
 
 plt.imsave('image.png', image)'''
 
-
+#samo za testiranje
 pos = Vector(1,1,0)
 krogla = Sphere(1, pos, (123, 34, 5), 0.5)
 zarek = Ray(Vector(-1,-1,0), Vector(1, 1, 0))
