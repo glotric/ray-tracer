@@ -3,4 +3,4 @@ zaslon in kamera:
 camera=(0,0,1)
 
 objekti:
-krogla x=5 y=0 z=2 R=2 RGB(64,164,213) obojnost=0.5
+krogla R=2 center=(3,4,7) RGB(54,244,1) obojnost=0.5
