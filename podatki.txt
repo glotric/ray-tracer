@@ -1,5 +1,5 @@
 zaslon in kamera:
-1920 1080
+192 108
 camera=(0,0,1)
 light=(1000,1000,300)
 
