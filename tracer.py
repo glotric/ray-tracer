@@ -1,4 +1,5 @@
 import numpy as np
+import json
 import math
 import matplotlib.pyplot as plt
 
@@ -72,6 +73,9 @@ class Ray:
 
         return Ray(point, ref_direction)
 
+    def shadow(self, light, sphere):
+        point = sphere.intersect_point(self)
+        return Ray(point, light-point)
 
 #Definicija krogel
 
@@ -125,6 +129,8 @@ class Sphere:
         normal = v2.scale(1/self.r)
 
         return normal.normalize()
+
+
 
 
 
