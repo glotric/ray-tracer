@@ -140,7 +140,7 @@ f = open("podatki.txt", 'r')
 lines = f.readlines()
 
 w_str, h_str = lines[1].split()
-width, height = float(w_str), float(h_str)
+width, height = int(w_str), int(h_str)
 cam_pos = tuple(lines[2].split('=')[-1].strip('()\n ').split(','))
 source_pos = tuple(lines[3].split('=')[-1].strip('()\n ').split(','))
 
@@ -150,17 +150,41 @@ source_pos = tuple(lines[3].split('=')[-1].strip('()\n ').split(','))
 camera = Vector(float(cam_pos[0]), float(cam_pos[1]), float(cam_pos[2]))
 source = Vector(float(source_pos[0]), float(source_pos[1]), float(source_pos[2]))
 ratio = width / height
-screen = (-1, 1, -1/ratio, 1/ratio) # L R D U
+screen = (-1, 1, -1/ratio, 1/ratio) # L R B T
 
 
 
 #sestavljanje slike
 
-image = np.zeros((int(height), int(width), 3)) 
-for i, y in enumerate(np.linspace(screen[2], screen[3], int(height))):
-    for j, x in enumerate(np.linspace(screen[0], screen[1], int(width))):
+image = np.zeros((height, width, 3))
+
+for i, y in enumerate(np.linspace(screen[2], screen[3], height)):
+    for j, x in enumerate(np.linspace(screen[0], screen[1], width)):
+        min_lambda = float(inf)
+        intersection_object = -1        
+
+        #izračun žarka
         current_pixel = Vector(x, y, 0)
         current_ray = Ray(camera, current_pixel - camera)
+
+        #ali zadane objekt
+        for n, n_sphere in enumerate(shperes):
+            c_intersection = n_sphere.intersect(current_ray)
+            if c_intersection['ok'] == True:
+                current_normal = n_sphere.intersect_normal(current_ray)
+                if min_lambda > c_intersection['in']:
+                    min_lambda = c_intersection['in']
+                    intersection_object = n
+
+        #računanje barve pixla
+
+
+
+
+
+
+
+
 
 
         # image[i, j] = ...
@@ -172,8 +196,8 @@ plt.imsave('image.png', image)
 
 
 #samo za testiranje
-pos = Vector(1,1,0)
-krogla = Sphere(1, pos, (123, 34, 5), 0.5)
+pos = Vector(1,1,10)
+spheres = [Sphere(1, pos, (123, 34, 5), 0.5), Sphere(1, Vector(3, 6, 5), (0, 134, 50), 0.5)]
 zarek = Ray(Vector(-1,-1,0), Vector(1, 1, 0))
 print(source)
 print(camera)
