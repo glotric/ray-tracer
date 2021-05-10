@@ -81,17 +81,17 @@ class Ray:
 
 class Sphere:
 
-    def __init__(self, r, center, RGB, reflect):   #pos je Vector, RGB je touple, r in reflect sta int
+    def __init__(self, r, center, ambient, reflect):   #pos je Vector, RGB je touple, r in reflect sta int
         self.r = r
         self.center = center
-        self.RGB = RGB
+        self.ambient = ambient
         self.reflect = reflect
 
     def __str__(self):
-        return 'r = {0}, center = {1}, colour = {2}, reflect = {3}'.format(self.r, self.center, self.RGB, self.reflect)
+        return 'r = {0}, center = {1}, colour = {2}, reflect = {3}'.format(self.r, self.center, self.ambient, self.reflect)
 
     def __repr__(self):
-        return 'Sphere({0},{1},{2},{3})'.format(self.r, self.center, self.RGB, self.reflect)
+        return 'Sphere({0},{1},{2},{3})'.format(self.r, self.center, self.ambient, self.reflect)
 
     def intersect(self, ray):
         intersection = {'in': 0, 'out': 0, 'ok': False}
@@ -144,6 +144,7 @@ width, height = int(w_str), int(h_str)
 cam_pos = tuple(lines[2].split('=')[-1].strip('()\n ').split(','))
 source_pos = tuple(lines[3].split('=')[-1].strip('()\n ').split(','))
 
+spheres = [Sphere(0.7, Vector(-0.2, 0, -1), (0.1, 0, 0), 0.5), Sphere(0.1, Vector(0.1, -0.3, 0), (0.1, 0, 0.1), 0.5), Sphere(0.15, Vector(-0.3, 0, 0), (0, 0.1, 0), 0.5)]
 
 #definirana kamera in zaslon
 
@@ -160,7 +161,7 @@ image = np.zeros((height, width, 3))
 
 for i, y in enumerate(np.linspace(screen[2], screen[3], height)):
     for j, x in enumerate(np.linspace(screen[0], screen[1], width)):
-        min_lambda = float(inf)
+        min_lambda = float('inf')
         intersection_object = -1        
 
         #izračun žarka
@@ -168,16 +169,19 @@ for i, y in enumerate(np.linspace(screen[2], screen[3], height)):
         current_ray = Ray(camera, current_pixel - camera)
 
         #ali zadane objekt
-        for n, n_sphere in enumerate(shperes):
-            c_intersection = n_sphere.intersect(current_ray)
+        for n, c_sphere in enumerate(spheres):
+            c_intersection = c_sphere.intersect(current_ray)
             if c_intersection['ok'] == True:
-                current_normal = n_sphere.intersect_normal(current_ray)
-                if min_lambda > c_intersection['in']:
+                current_normal = c_sphere.intersect_normal(current_ray)
+                if c_intersection['in'] < min_lambda:
                     min_lambda = c_intersection['in']
                     intersection_object = n
+                    intersection = c_intersection
+                    intersection_normal = current_normal
 
         #računanje barve pixla
-
+        if intersection_object > -1:
+            image[i,j] = spheres[n].ambient
 
 
 
@@ -196,12 +200,12 @@ plt.imsave('image.png', image)
 
 
 #samo za testiranje
-pos = Vector(1,1,10)
-spheres = [Sphere(1, pos, (123, 34, 5), 0.5), Sphere(1, Vector(3, 6, 5), (0, 134, 50), 0.5)]
-zarek = Ray(Vector(-1,-1,0), Vector(1, 1, 0))
-print(source)
-print(camera)
-print(krogla)
-print(zarek)
-print(krogla.intersect_point(zarek))
-print(zarek.reflect(krogla))
+#pos = Vector(1,1,10)
+#spheres = [Sphere(1, pos, (123, 34, 5), 0.5), Sphere(1, Vector(3, 6, 5), (0, 134, 50), 0.5)]
+#zarek = Ray(Vector(-1,-1,0), Vector(1, 1, 0))
+#print(source)
+#print(camera)
+#print(krogla)
+#print(zarek)
+#print(krogla.intersect_point(zarek))
+#print(zarek.reflect(krogla))
