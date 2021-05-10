@@ -1,7 +1,7 @@
 zaslon in kamera:
 192 108
 camera=(0,0,1)
-light=(1000,1000,300)
+light=(5,5,5)
 
 objekti:
 krogla R=2 center=(3,4,7) RGB(54,244,1) obojnost=0.5

@@ -159,7 +159,7 @@ screen = (-1, 1, -1/ratio, 1/ratio) # L R B T
 
 image = np.zeros((height, width, 3))
 
-for i, y in enumerate(np.linspace(screen[2], screen[3], height)):
+for i, y in enumerate(np.linspace(screen[3], screen[2], height)):
     for j, x in enumerate(np.linspace(screen[0], screen[1], width)):
         min_lambda = float('inf')
         intersection_object = -1        
@@ -181,7 +181,7 @@ for i, y in enumerate(np.linspace(screen[2], screen[3], height)):
 
         #računanje barve pixla
         if intersection_object > -1:
-            image[i,j] = spheres[n].ambient
+            image[i,j] = spheres[intersection_object].ambient
 
 
 
