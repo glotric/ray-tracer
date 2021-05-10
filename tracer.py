@@ -77,15 +77,19 @@ class Ray:
         point = sphere.intersect_point(self)
         return Ray(point, light-point)
 
+
 #Definicija krogel
 
 class Sphere:
 
-    def __init__(self, r, center, ambient, reflect):   #pos je Vector, RGB je touple, r in reflect sta int
+    def __init__(self, r, center, ambient, diffuse, specular=(1,1,1), shininess=100, reflection=0.5):   #pos je Vector, RGB je touple, r in reflect sta int
         self.r = r
         self.center = center
         self.ambient = ambient
-        self.reflect = reflect
+        self.diffuse = diffuse
+        self.specular = specular
+        self.shininess = shininess
+        self.reflection = reflection
 
     def __str__(self):
         return 'r = {0}, center = {1}, colour = {2}, reflect = {3}'.format(self.r, self.center, self.ambient, self.reflect)
@@ -144,7 +148,12 @@ width, height = int(w_str), int(h_str)
 cam_pos = tuple(lines[2].split('=')[-1].strip('()\n ').split(','))
 source_pos = tuple(lines[3].split('=')[-1].strip('()\n ').split(','))
 
-spheres = [Sphere(0.7, Vector(-0.2, 0, -1), (0.1, 0, 0), 0.5), Sphere(0.1, Vector(0.1, -0.3, 0), (0.1, 0, 0.1), 0.5), Sphere(0.15, Vector(-0.3, 0, 0), (0, 0.1, 0), 0.5)]
+#objekti
+krogla1 = Sphere(0.7, Vector(-0.2, 0, -1), (0.1, 0, 0), (0.7, 0, 0), (1,1,1), 100, 0.5)
+krogla2 = Sphere(0.1, Vector(0.1, -0.3, 0), (0.1, 0, 0.1), (0.7, 0, 0.7), (1,1,1), 100, 0.5)
+krogla3 = Sphere(0.15, Vector(-0.3, 0, 0), (0, 0.1, 0), (0, 0.6, 0), (1,1,1), 100, 0.5)
+
+spheres = [krogla1, krogla2, krogla3]
 
 #definirana kamera in zaslon
 
@@ -182,6 +191,13 @@ for i, y in enumerate(np.linspace(screen[3], screen[2], height)):
         #računanje barve pixla
         if intersection_object > -1:
             image[i,j] = spheres[intersection_object].ambient
+            shadow_ray = current_ray.shadow(source, spheres[intersection_object])
+            for m, m_sphere in enumerate(spheres):
+                if m != intersection_object:
+                    if m_sphere.intersect(shadow_ray)['ok']:
+                        shadow = True
+                    
+
 
 
 
@@ -192,7 +208,7 @@ for i, y in enumerate(np.linspace(screen[3], screen[2], height)):
 
 
         # image[i, j] = ...
-        print("progress: %d/%d" % (i + 1, int(height)))
+        print("progress: %d/%d" % (((i+1)*width+j+1)/(height*width)*100, 100))
 
 plt.imsave('image.png', image)
 
