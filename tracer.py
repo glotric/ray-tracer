@@ -163,8 +163,9 @@ source_pos = tuple(lines[3].split('=')[-1].strip('()\n ').split(','))
 krogla1 = Sphere(0.7, Vector(-0.2, 0, -1), np.array([0.1, 0, 0]), np.array([0.7, 0, 0]), np.array([1,1,1]), 100, 0.5)
 krogla2 = Sphere(0.1, Vector(0.1, -0.3, 0), np.array([0.1, 0, 0.1]), np.array([0.7, 0, 0.7]), np.array([1,1,1]), 100, 0.5)
 krogla3 = Sphere(0.15, Vector(-0.3, 0, 0), np.array([0, 0.1, 0]), np.array([0, 0.6, 0]), np.array([1,1,1]), 100, 0.5)
+ravnina = Sphere(9000-0.7, Vector(0, -9000, 0), np.array([0.1, 0.1, 0.1]), np.array([0.6, 0.6, 0.6]), np.array([1,1,1]), 100, 0.5)
 
-spheres = [krogla1, krogla2, krogla3]
+spheres = [krogla1, krogla2, krogla3, ravnina]
 
 #definirana kamera in zaslon
 
@@ -217,13 +218,13 @@ for i, y in enumerate(np.linspace(screen[3], screen[2], height)):
             else:
                 RGB = blinnphong(light, current_ray, spheres[intersection_object])
 
-
+            #odsev ostalih teles
 
 
 
         image[i,j] = np.clip(RGB, 0, 1)
 
-        print("progress: %d/%d" % (((i+1)*width+j+1)/(height*width)*100, 100))
+        print("preračunavam: {}%".format((i*width+j+1)/(height*width)*100))
 
 plt.imsave('image.png', image)
 
