@@ -82,7 +82,7 @@ class Ray:
 
 class Sphere:
 
-    def __init__(self, r, center, ambient, diffuse, specular=(1,1,1), shininess=100, reflection=0.5):   #pos je Vector, RGB je touple, r in reflect sta int
+    def __init__(self, r, center, ambient, diffuse, specular=np.array([1,1,1]), shininess=100, reflection=0.5):
         self.r = r
         self.center = center
         self.ambient = ambient
@@ -149,9 +149,9 @@ cam_pos = tuple(lines[2].split('=')[-1].strip('()\n ').split(','))
 source_pos = tuple(lines[3].split('=')[-1].strip('()\n ').split(','))
 
 #objekti
-krogla1 = Sphere(0.7, Vector(-0.2, 0, -1), (0.1, 0, 0), (0.7, 0, 0), (1,1,1), 100, 0.5)
-krogla2 = Sphere(0.1, Vector(0.1, -0.3, 0), (0.1, 0, 0.1), (0.7, 0, 0.7), (1,1,1), 100, 0.5)
-krogla3 = Sphere(0.15, Vector(-0.3, 0, 0), (0, 0.1, 0), (0, 0.6, 0), (1,1,1), 100, 0.5)
+krogla1 = Sphere(0.7, Vector(-0.2, 0, -1), np.array([0.1, 0, 0]), np.array([0.7, 0, 0]), np.array([1,1,1]), 100, 0.5)
+krogla2 = Sphere(0.1, Vector(0.1, -0.3, 0), np.array([0.1, 0, 0.1]), np.array([0.7, 0, 0.7]), np.array([1,1,1]), 100, 0.5)
+krogla3 = Sphere(0.15, Vector(-0.3, 0, 0), np.array([0, 0.1, 0]), np.array([0, 0.6, 0]), np.array([1,1,1]), 100, 0.5)
 
 spheres = [krogla1, krogla2, krogla3]
 
@@ -162,7 +162,7 @@ source = Vector(float(source_pos[0]), float(source_pos[1]), float(source_pos[2])
 ratio = width / height
 screen = (-1, 1, -1/ratio, 1/ratio) # L R B T
 
-
+light = {'pos': Vector(5,5,5), 'ambient': np.array([1,1,1]), 'diffuse': np.array([1,1,1]), 'specular': np.array([1,1,1])}
 
 #sestavljanje slike
 
@@ -172,6 +172,8 @@ for i, y in enumerate(np.linspace(screen[3], screen[2], height)):
     for j, x in enumerate(np.linspace(screen[0], screen[1], width)):
         min_lambda = float('inf')
         intersection_object = -1        
+        shadow = False
+        RGB = np.zeros(3)
 
         #izračun žarka
         current_pixel = Vector(x, y, 0)
@@ -181,33 +183,35 @@ for i, y in enumerate(np.linspace(screen[3], screen[2], height)):
         for n, c_sphere in enumerate(spheres):
             c_intersection = c_sphere.intersect(current_ray)
             if c_intersection['ok'] == True:
-                current_normal = c_sphere.intersect_normal(current_ray)
                 if c_intersection['in'] < min_lambda:
                     min_lambda = c_intersection['in']
                     intersection_object = n
                     intersection = c_intersection
-                    intersection_normal = current_normal
 
         #računanje barve pixla
         if intersection_object > -1:
-            image[i,j] = spheres[intersection_object].ambient
-            shadow_ray = current_ray.shadow(source, spheres[intersection_object])
+            #image[i,j] = spheres[intersection_object].ambient * light['ambient']
+            shadow_ray = current_ray.shadow(light['pos'], spheres[intersection_object])
+            intersection_normal = spheres[intersection_object].intersect_normal(current_ray)
             for m, m_sphere in enumerate(spheres):
-                if m != intersection_object:
-                    if m_sphere.intersect(shadow_ray)['ok']:
-                        shadow = True
-                    
+                #if m != intersection_object:
+                if m_sphere.intersect(shadow_ray)['ok']:
+                    shadow = True
+        
+            #če je v senci samo ambientna svetloba
+            if shadow == True:
+                RGB = spheres[intersection_object].ambient * light['ambient']
+
+            #če ni v senci blinn-phong
+            else:
+                RGB = 
 
 
 
 
 
+        image[i,j] = RGB
 
-
-
-
-
-        # image[i, j] = ...
         print("progress: %d/%d" % (((i+1)*width+j+1)/(height*width)*100, 100))
 
 plt.imsave('image.png', image)
