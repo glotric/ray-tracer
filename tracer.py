@@ -82,12 +82,12 @@ class Ray:
 
 class Sphere:
 
-    def __init__(self, r, center, ambient, diffuse, specular=np.array([1,1,1]), shininess=100, reflection=0.5):
+    def __init__(self, r, center, ambient, diffuse, specular=[1,1,1], shininess=100, reflection=0.5):
         self.r = r
         self.center = center
-        self.ambient = ambient
-        self.diffuse = diffuse
-        self.specular = specular
+        self.ambient = np.array(ambient)
+        self.diffuse = np.array(diffuse)
+        self.specular = np.array(specular)
         self.shininess = shininess
         self.reflection = reflection
 
@@ -160,10 +160,10 @@ cam_pos = tuple(lines[2].split('=')[-1].strip('()\n ').split(','))
 source_pos = tuple(lines[3].split('=')[-1].strip('()\n ').split(','))
 
 #objekti
-krogla1 = Sphere(0.7, Vector(-0.2, 0, -1), np.array([0.1, 0, 0]), np.array([0.7, 0, 0]), np.array([1,1,1]), 100, 0.5)
-krogla2 = Sphere(0.1, Vector(0.1, -0.3, 0), np.array([0.1, 0, 0.1]), np.array([0.7, 0, 0.7]), np.array([1,1,1]), 100, 0.5)
-krogla3 = Sphere(0.15, Vector(-0.3, 0, 0), np.array([0, 0.1, 0]), np.array([0, 0.6, 0]), np.array([1,1,1]), 100, 0.5)
-ravnina = Sphere(9000-0.7, Vector(0, -9000, 0), np.array([0.1, 0.1, 0.1]), np.array([0.6, 0.6, 0.6]), np.array([1,1,1]), 100, 0.5)
+krogla1 = Sphere(0.7, Vector(-0.2, 0, -1), [0.1, 0, 0], [0.7, 0, 0], [1,1,1], 100, 0.5)
+krogla2 = Sphere(0.1, Vector(0.1, -0.3, 0), [0.1, 0, 0.1], [0.7, 0, 0.7], [1,1,1], 100, 0.5)
+krogla3 = Sphere(0.15, Vector(-0.3, 0, 0), [0, 0.1, 0], [0, 0.6, 0], [1,1,1], 100, 0.5)
+ravnina = Sphere(9000-0.7, Vector(0, -9000, 0), [0.1, 0.1, 0.1], [0.6, 0.6, 0.6], [1,1,1], 100, 0.5)
 
 spheres = [krogla1, krogla2, krogla3, ravnina]
 
