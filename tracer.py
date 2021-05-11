@@ -135,7 +135,18 @@ class Sphere:
         return normal.normalize()
 
 
+#Blinn-Phong model senčenja
 
+def blinnphong(light, ray, sphere):
+    I = np.zeros(3)
+    n = sphere.intersect_normal(ray)
+    l = (light['pos'] - sphere.intersect_point(ray)).normalize()
+    v = ray.direction.scale(-1)
+
+    I = sphere.ambient * light['ambient']
+    I += sphere.diffuse * light['diffuse'] * l.dotproduct(n)
+    I += sphere.specular * light['specular'] * n.dotproduct((l+v).normalize()) ** (sphere.shininess / 4)
+    return I
 
 
 #Začne brat podatke
@@ -204,13 +215,13 @@ for i, y in enumerate(np.linspace(screen[3], screen[2], height)):
 
             #če ni v senci blinn-phong
             else:
-                RGB = 
+                RGB = blinnphong(light, current_ray, spheres[intersection_object])
 
 
 
 
 
-        image[i,j] = RGB
+        image[i,j] = np.clip(RGB, 0, 1)
 
         print("progress: %d/%d" % (((i+1)*width+j+1)/(height*width)*100, 100))
 
