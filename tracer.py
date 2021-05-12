@@ -205,9 +205,9 @@ def render_image(image, height, width, screen, camera, light, spheres, depth):
 
             image[i,j] = np.clip(RGB, 0, 1)
 
-            completed = (i*width+j+1)/(height*width)*100
-            completed = round(completed, 2)
-            print("preračunavam: {}%".format(completed))
+        completed = (i*width+j+1)/(height*width)*100
+        completed = round(completed, 2)
+        print("preračunavam: {}%".format(completed))
 
 
 #Začne brat podatke
