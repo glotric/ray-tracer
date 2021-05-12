@@ -167,6 +167,8 @@ ravnina = Sphere(9000-0.7, Vector(0, -9000, 0), [0.1, 0.1, 0.1], [0.6, 0.6, 0.6]
 
 spheres = [krogla1, krogla2, krogla3, ravnina]
 
+depth = 3
+
 #definirana kamera in zaslon
 
 camera = Vector(float(cam_pos[0]), float(cam_pos[1]), float(cam_pos[2]))
@@ -186,58 +188,51 @@ for i, y in enumerate(np.linspace(screen[3], screen[2], height)):
         intersection_object = -1        
         shadow = False
         RGB = np.zeros(3)
+        I = np.zeros(3)
+        reflection = 1
 
         #izračun žarka
         current_pixel = Vector(x, y, 0)
         current_ray = Ray(camera, current_pixel - camera)
 
-        #ali zadane objekt
-        for n, c_sphere in enumerate(spheres):
-            c_intersection = c_sphere.intersect(current_ray)
-            if c_intersection['ok'] == True:
-                if c_intersection['in'] < min_lambda:
-                    min_lambda = c_intersection['in']
-                    intersection_object = n
-                    intersection = c_intersection
+        for d in range(depth):
+            #ali zadane objekt
+            for n, c_sphere in enumerate(spheres):
+                c_intersection = c_sphere.intersect(current_ray)
+                if c_intersection['ok'] == True:
+                    if c_intersection['in'] < min_lambda:
+                        min_lambda = c_intersection['in']
+                        intersection_object = n
+                        intersection = c_intersection
 
-        #računanje barve pixla
-        if intersection_object > -1:
-            #image[i,j] = spheres[intersection_object].ambient * light['ambient']
-            shadow_ray = current_ray.shadow(light['pos'], spheres[intersection_object])
-            intersection_normal = spheres[intersection_object].intersect_normal(current_ray)
-            for m, m_sphere in enumerate(spheres):
-                #if m != intersection_object:
-                if m_sphere.intersect(shadow_ray)['ok']:
-                    shadow = True
-        
-            #če je v senci samo ambientna svetloba
-            if shadow == True:
-                RGB = spheres[intersection_object].ambient * light['ambient']
+            #računanje barve pixla
+            if intersection_object > -1:
+                #image[i,j] = spheres[intersection_object].ambient * light['ambient']
+                shadow_ray = current_ray.shadow(light['pos'], spheres[intersection_object])
 
-            #če ni v senci blinn-phong
-            else:
-                RGB = blinnphong(light, current_ray, spheres[intersection_object])
+                for m, m_sphere in enumerate(spheres):
+                    #if m != intersection_object:
+                    if m_sphere.intersect(shadow_ray)['ok']:
+                        shadow = True
+            
+                #če je v senci samo ambientna svetloba
+                if shadow == True:
+                    I = spheres[intersection_object].ambient * light['ambient']
 
-            #odsev ostalih teles
+                #če ni v senci blinn-phong
+                else:
+                    I = blinnphong(light, current_ray, spheres[intersection_object])
 
+                #odsev ostalih teles
+                RGB += reflection * I
+                reflection *= spheres[intersection_object].reflection
 
+                current_ray = current_ray.reflect(spheres[intersection_object])
 
         image[i,j] = np.clip(RGB, 0, 1)
 
-        print("preračunavam: {}%".format((i*width+j+1)/(height*width)*100))
+        completed = (i*width+j+1)/(height*width)*100
+        completed = round(completed, 2)
+        print("preračunavam: {}%".format(completed))
 
 plt.imsave('image.png', image)
-
-
-
-
-#samo za testiranje
-#pos = Vector(1,1,10)
-#spheres = [Sphere(1, pos, (123, 34, 5), 0.5), Sphere(1, Vector(3, 6, 5), (0, 134, 50), 0.5)]
-#zarek = Ray(Vector(-1,-1,0), Vector(1, 1, 0))
-#print(source)
-#print(camera)
-#print(krogla)
-#print(zarek)
-#print(krogla.intersect_point(zarek))
-#print(zarek.reflect(krogla))
