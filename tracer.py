@@ -210,41 +210,41 @@ def render_image(image, height, width, screen, camera, light, spheres, depth):
         completed = round(completed, 2)
         print("preračunavam: {}%".format(completed))
 
-#prebere podatke iz podatki.json
+
+#Branje podatkov iz podatki.json
 
 def read_data():
-    pass
+    spheres =[]
+
+    f = open('podatki.json')
+    data = json.load(f)
+    for s in data['sphere']:
+        spheres.append(Sphere(s['r'], Vector(s['center'][0], s['center'][1], s['center'][2]), s['ambient'], s['diffuse'], s['specular'], s['shininess'], s['reflection']))
+
+    light = data['light']
+    light['pos'] = Vector(data['light']['pos'][0], data['light']['pos'][1], data['light']['pos'][2])
+
+
+    height = data['height']
+    width = data['width']
+    depth = data['depth']
+    camera = Vector(data['camera'][0], data['camera'][1], data['camera'][2])
+
+    f.close()
+
+    return height, width, camera, light, spheres, depth
 
 
 
-
-
-
-
-#podatki
-krogla1 = Sphere(0.7, Vector(-0.2, 0, -1), [0.1, 0, 0], [0.7, 0, 0], [1,1,1], 100, 0.5)
-krogla2 = Sphere(0.1, Vector(0.1, -0.3, 0), [0.1, 0, 0.1], [0.7, 0, 0.7], [1,1,1], 100, 0.5)
-krogla3 = Sphere(0.15, Vector(-0.3, 0, 0), [0, 0.1, 0], [0, 0.6, 0], [1,1,1], 100, 0.5)
-ravnina = Sphere(9000-0.7, Vector(0, -9000, 0), [0.1, 0.1, 0.1], [0.6, 0.6, 0.6], [1,1,1], 100, 0.5)
-
-spheres = [krogla1, krogla2, krogla3, ravnina]
-
-light = {'pos': Vector(5,5,5), 'ambient': np.array([1,1,1]), 'diffuse': np.array([1,1,1]), 'specular': np.array([1,1,1])}
-focal_distance = 1
-
-camera = Vector(0, 0, 1)
-height = 200
-width = 300
-depth = 3
+#prebere podatke
+height, width, camera, light, spheres, depth = read_data()
 
 #definira zaslon
 ratio = width / height
 screen = (-1, 1, -1/ratio, 1/ratio) # L R B T
 
-#sestavljanje slike
-
+#sestavi sliko
 image = np.zeros((height, width, 3))
-
 render_image(image, height, width, screen, camera, light, spheres, depth)
 
 plt.imsave('image.png', image)
