@@ -46,7 +46,7 @@
     },
 
     "camera": [0, 0, 1],
-    "height": 200,
-    "width": 300,
+    "height": 1080,
+    "width": 1920,
     "depth": 3
 }

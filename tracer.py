@@ -1,6 +1,5 @@
 import numpy as np
 import json
-import math
 import matplotlib.pyplot as plt
 from numba import jit, prange
 
@@ -213,10 +212,10 @@ def render_image(image, height, width, screen, camera, light, spheres, depth):
 
 #Branje podatkov iz podatki.json
 
-def read_data():
+def read_data(filename):
     spheres =[]
 
-    f = open('podatki.json')
+    f = open(filename)
     data = json.load(f)
     for s in data['sphere']:
         spheres.append(Sphere(s['r'], Vector(s['center'][0], s['center'][1], s['center'][2]), s['ambient'], s['diffuse'], s['specular'], s['shininess'], s['reflection']))
@@ -236,8 +235,9 @@ def read_data():
 
 
 
+# MAIN
 #prebere podatke
-height, width, camera, light, spheres, depth = read_data()
+height, width, camera, light, spheres, depth = read_data('podatki.json')
 
 #definira zaslon
 ratio = width / height
