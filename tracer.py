@@ -150,7 +150,7 @@ def blinnphong(light, ray, sphere):
     return I
 
 
-#Oblikovanje slike
+#Sestavljanje slike
 
 def render_image(image, height, width, screen, camera, light, spheres, depth):
     y = np.linspace(screen[3], screen[2], height)
@@ -189,11 +189,11 @@ def render_image(image, height, width, screen, camera, light, spheres, depth):
                         if m_sphere.intersect(shadow_ray)['ok']:
                             shadow = True
                 
-                    #če je v senci samo ambientna svetloba
+                    #če je v senci -> samo ambientna svetloba
                     if shadow == True:
                         I = spheres[intersection_object].ambient * light['ambient']
 
-                    #če ni v senci blinn-phong
+                    #če ni v senci -> Blinn-Phong
                     else:
                         I = blinnphong(light, current_ray, spheres[intersection_object])
 
@@ -201,6 +201,7 @@ def render_image(image, height, width, screen, camera, light, spheres, depth):
                     RGB += reflection * I
                     reflection *= spheres[intersection_object].reflection
 
+                    #Odbiti žarek
                     current_ray = current_ray.reflect(spheres[intersection_object])
 
             image[i,j] = np.clip(RGB, 0, 1)
@@ -209,18 +210,18 @@ def render_image(image, height, width, screen, camera, light, spheres, depth):
         completed = round(completed, 2)
         print("preračunavam: {}%".format(completed))
 
+#prebere podatke iz podatki.json
 
-#Začne brat podatke
+def read_data():
+    pass
 
-f = open("podatki.txt", 'r')
-lines = f.readlines()
 
-w_str, h_str = lines[1].split()
-width, height = int(w_str), int(h_str)
-cam_pos = tuple(lines[2].split('=')[-1].strip('()\n ').split(','))
-source_pos = tuple(lines[3].split('=')[-1].strip('()\n ').split(','))
 
-#objekti
+
+
+
+
+#podatki
 krogla1 = Sphere(0.7, Vector(-0.2, 0, -1), [0.1, 0, 0], [0.7, 0, 0], [1,1,1], 100, 0.5)
 krogla2 = Sphere(0.1, Vector(0.1, -0.3, 0), [0.1, 0, 0.1], [0.7, 0, 0.7], [1,1,1], 100, 0.5)
 krogla3 = Sphere(0.15, Vector(-0.3, 0, 0), [0, 0.1, 0], [0, 0.6, 0], [1,1,1], 100, 0.5)
@@ -228,16 +229,17 @@ ravnina = Sphere(9000-0.7, Vector(0, -9000, 0), [0.1, 0.1, 0.1], [0.6, 0.6, 0.6]
 
 spheres = [krogla1, krogla2, krogla3, ravnina]
 
+light = {'pos': Vector(5,5,5), 'ambient': np.array([1,1,1]), 'diffuse': np.array([1,1,1]), 'specular': np.array([1,1,1])}
+focal_distance = 1
+
+camera = Vector(0, 0, 1)
+height = 200
+width = 300
 depth = 3
 
-#definirana kamera in zaslon
-
-camera = Vector(float(cam_pos[0]), float(cam_pos[1]), float(cam_pos[2]))
-source = Vector(float(source_pos[0]), float(source_pos[1]), float(source_pos[2]))
+#definira zaslon
 ratio = width / height
 screen = (-1, 1, -1/ratio, 1/ratio) # L R B T
-
-light = {'pos': Vector(5,5,5), 'ambient': np.array([1,1,1]), 'diffuse': np.array([1,1,1]), 'specular': np.array([1,1,1])}
 
 #sestavljanje slike
 
