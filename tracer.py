@@ -93,10 +93,10 @@ class Sphere:
         self.reflection = reflection
 
     def __str__(self):
-        return 'r = {0}, center = {1}, colour = {2}, reflect = {3}'.format(self.r, self.center, self.ambient, self.reflect)
+        return 'r = {0}, center = {1}, ambient = {2}, diffuse = {3}, specular = {4}, shininess = {5}, reflection = {6}'.format(self.r, self.center, self.ambient, self.diffuse, self.specular, self.shininess, self.reflection)
 
     def __repr__(self):
-        return 'Sphere({0},{1},{2},{3})'.format(self.r, self.center, self.ambient, self.reflect)
+        return 'Sphere({0}, {1}, {2}, {3}, {4}, {5}, {6})'.format(self.r, self.center, self.ambient, self.diffuse, self.specular, self.shininess, self.reflection)
 
     def intersect(self, ray):
         intersection = {'in': 0, 'out': 0, 'ok': False}
@@ -242,7 +242,6 @@ ratio = width / height
 screen = (-1, 1, -1/ratio, 1/ratio) # L R B T
 
 #sestavljanje slike
-
 
 image = np.zeros((height, width, 3))
 
